@@ -152,6 +152,19 @@ extern int FIFO_Get(FIFO_t* pFIFO, void* pElement);
 
 //******************************************************************************************
 //
+//! \brief  Pre-Read an element from FIFO.
+//!
+//! \param  [in]  pFIFO is the pointer of valid FIFO.
+//! \param  [in]  Offset is the offset from current pointer.
+//! \param  [out] pElement is the address of element you want to get
+//!
+//! \retval 0 if operate successfully, otherwise return -1.
+//
+//******************************************************************************************
+extern int FIFO_PreRead(FIFO_t* pFIFO, uint8_t Offset, void* pElement);
+
+//******************************************************************************************
+//
 //! \brief  FIFO is empty ?
 //!
 //! \param  [in] pFIFO is the pointer of valid FIFO.

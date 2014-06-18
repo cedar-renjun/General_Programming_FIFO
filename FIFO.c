@@ -253,6 +253,62 @@ int FIFO_Get(FIFO_t* pFIFO, void* pElement)
 
 //******************************************************************************************
 //
+//! \brief  Pre-Read an element from FIFO.
+//!
+//! \param  [in]  pFIFO is the pointer of valid FIFO.
+//! \param  [in]  Offset is the offset from current pointer.
+//! \param  [out] pElement is the address of element you want to get
+//!
+//! \retval 0 if operate successfully, otherwise return -1.
+//
+//******************************************************************************************
+int FIFO_PreRead(FIFO_t* pFIFO, uint8_t Offset, void* pElement)
+{
+
+    uint8_t  i = 0;
+    uint8_t*  _pElement = (uint8_t*)pElement;
+    uint8_t* _PreReadIndex = (void*)0;
+    uint8_t* _PreReadIndex = (void*)0;
+
+    //! Check input parameters.
+    ASSERT(NULL != pFIFO);
+    ASSERT(NULL != pElement);
+
+    // OverFlow ?
+    if(Offset >= pFIFO->Used)
+    {        
+        return (-1);
+    }
+
+    // Move Read Pointer to right position   
+    _PreReadIndex = pFIFO->pReadIndex;
+    for(i = 0; i < pFIFO->UnitSize * Offset; i++)
+    {
+        if(_PreReadIndex > pFIFO->pEndAddr)
+        {
+            _PreReadIndex = pFIFO->pStartAddr;
+        }
+        
+        _PreReadIndex++;
+    }
+
+    //! Copy Data
+    for(i = 0; i < pFIFO->UnitSize; i++)
+    {
+        if(_PreReadIndex > pFIFO->pEndAddr)
+        {
+            _PreReadIndex = pFIFO->pStartAddr;
+        }
+
+        *_pElement++ = *(_PreReadIndex);
+        _PreReadIndex++;
+    }
+    
+    return (0);
+}
+
+//******************************************************************************************
+//
 //! \brief  FIFO is empty ?
 //!
 //! \param  [in] pFIFO is the pointer of valid FIFO.
