@@ -46,7 +46,8 @@ extern "C"
 #define USE_SYS_INTXX                      //!< Use stdint standard datatype
 #define USE_DYNAMIC_MEMORY                 //!< Use system malloc/free function
 
-
+#define STM32_MCU
+    
 #include <stdio.h>
 
 #ifdef USE_SYS_INTXX
@@ -58,6 +59,16 @@ typedef unsigned int  uint32_t;
 
 #ifdef USE_DYNAMIC_MEMORY
 #include <stdlib.h>
+#endif
+
+
+#ifdef STM32_MCU
+
+#include "stm32f10x.h"
+
+#define MASTER_INT_EN()  __enable_irq()
+#define MASTER_INT_DIS() __disable_irq()
+
 #endif
 
 //******************************************************************************************
