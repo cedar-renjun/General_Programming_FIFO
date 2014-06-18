@@ -149,7 +149,7 @@ int FIFO_Init(FIFO_t* pFIFO, void* pBaseAddr, uint8_t UnitSize, uint32_t UnitCnt
     ASSERT(0    != UnitSize);
     ASSERT(0    != UnitCnt);
 
-    MASTER_INT_EN();
+    MASTER_INT_DIS();
     
     //! Initialize FIFO Control Block.
     pFIFO->pStartAddr  = (uint8_t*) pBaseAddr;
@@ -160,7 +160,7 @@ int FIFO_Init(FIFO_t* pFIFO, void* pBaseAddr, uint8_t UnitSize, uint32_t UnitCnt
     pFIFO->pReadIndex  = (uint8_t*) pBaseAddr;
     pFIFO->pWriteIndex = (uint8_t*) pBaseAddr;
     
-    MASTER_INT_DIS();
+    MASTER_INT_EN();
 
     return (0);
 }
@@ -200,16 +200,16 @@ int FIFO_Put(FIFO_t* pFIFO, void* pElement)
         }
 
         *(pFIFO->pWriteIndex) = *_pElement++;
-        MASTER_INT_EN();
-        pFIFO->pWriteIndex++;
         MASTER_INT_DIS();
+        pFIFO->pWriteIndex++;
+        MASTER_INT_EN();
     }
 
     //! Update information
-    MASTER_INT_EN();
+    MASTER_INT_DIS();
     pFIFO->Free--;
     pFIFO->Used++;
-    MASTER_INT_DIS();
+    MASTER_INT_EN();
 
     return (0);
 }
@@ -249,16 +249,16 @@ int FIFO_Get(FIFO_t* pFIFO, void* pElement)
         }
 
         *_pElement++ = *(pFIFO->pReadIndex);
-        MASTER_INT_EN();
-        pFIFO->pReadIndex++;
         MASTER_INT_DIS();
+        pFIFO->pReadIndex++;
+        MASTER_INT_EN();
     }
 
     //! Update information
-    MASTER_INT_EN();
+    MASTER_INT_DIS();
     pFIFO->Free++;
     pFIFO->Used--;
-    MASTER_INT_DIS();
+    MASTER_INT_EN();
     
     return (0);
 }
@@ -403,12 +403,12 @@ int FIFO_Flush(FIFO_t* pFIFO)
     ASSERT(NULL != pFIFO);
 
     //! Initialize FIFO Control Block.
-    MASTER_INT_EN();
+    MASTER_INT_DIS();
     pFIFO->Free        = (pFIFO->pEndAddr - pFIFO->pStartAddr)/(pFIFO->UnitSize);
     pFIFO->Used        = 0;
     pFIFO->pReadIndex  = pFIFO->pStartAddr;
     pFIFO->pWriteIndex = pFIFO->pStartAddr;
-    MASTER_INT_DIS();
+    MASTER_INT_EN();
 
     return (0);
 }
