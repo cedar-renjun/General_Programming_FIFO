@@ -81,8 +81,38 @@ static void TestCase_StaticMemory(void)
 
 int main(void)
 {
+    static uint8_t Test[20];
+    uint8_t retval = 0;
+    
+    FIFO_S_t SingleFifo;
+    
     TestCase_DynamicMemory();
     TestCase_StaticMemory();
+    
+    FIFO_S_Init(&SingleFifo, Test, sizeof(Test));
+    FIFO_S_Put(&SingleFifo, 'A');
+    FIFO_S_Put(&SingleFifo, 'B');
+    FIFO_S_Put(&SingleFifo, 'C');
+    FIFO_S_Put(&SingleFifo, 'D');
+    FIFO_S_Put(&SingleFifo, 'E');
+    
+    retval = FIFO_S_IsEmpty(&SingleFifo);
+    retval = FIFO_S_IsFull(&SingleFifo);
+    retval = FIFO_S_CountUsed(&SingleFifo);
+    retval = FIFO_S_CountFree(&SingleFifo);    
 
+    retval = FIFO_S_PreRead(&SingleFifo, 0);
+    retval = FIFO_S_PreRead(&SingleFifo, 1);
+    retval = FIFO_S_PreRead(&SingleFifo, 2);
+    retval = FIFO_S_PreRead(&SingleFifo, 3);
+    retval = FIFO_S_PreRead(&SingleFifo, 4);
+    
+    retval = FIFO_S_Get(&SingleFifo);
+    retval = FIFO_S_Get(&SingleFifo);
+    retval = FIFO_S_Get(&SingleFifo);
+    retval = FIFO_S_Get(&SingleFifo);
+    retval = FIFO_S_Get(&SingleFifo);    
+    
+    
     return (0);
 }
